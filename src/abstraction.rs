@@ -4,9 +4,9 @@
 #[macro_export]
 macro_rules! define_wrapper_type {
     // macro handle to receive derive traits defination
-    ($name: ident, $in_type: ty, $(#[$m: meta]),* ) => {
+    ($name: ident, $in_type: ty, $(#[$m: meta]),* ; $(#[$n: meta]),*) => {
         $(#[$m])*
-        pub struct $name($in_type);
+        pub struct $name( $(#[$n])* $in_type );
 
         ::paste::paste! {
             #[allow(non_camel_case_types, dead_code)]
@@ -47,7 +47,7 @@ macro_rules! define_wrapper_type {
             $name,
             $in_type,
             #[repr(transparent)],
-            #[derive(Debug, Clone, Eq, PartialEq)]
+            #[derive(Debug, Clone, Eq, PartialEq)];
         );
    };
 }
@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn wraper_type_core() {
-        define_wrapper_type!(Custom, (i32, &'static str), #[derive(Hash)], #[repr(transparent)]);
+        define_wrapper_type!(Custom, (i32, &'static str), #[derive(Hash)], #[repr(transparent)];);
 
         let val = Custom::from((10, "test"));
 
