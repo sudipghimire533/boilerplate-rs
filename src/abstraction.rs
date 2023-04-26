@@ -38,3 +38,18 @@ macro_rules! define_wrapper_type {
         }
     };
 }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    define_wrapper_type!(Value, u32);
+
+    #[test]
+    fn wrapper_type() {
+        let val = Value::from(1);
+
+        assert_eq!(val.as_ref(), &1);
+        assert_eq!(val.consume(), 1);
+        assert_eq!(Value::from(10_u32).consume(), Value_InnerType::from(10_u32));
+    }
+}
