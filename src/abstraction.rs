@@ -43,7 +43,7 @@ macro_rules! define_wrapper_type {
     };
 
     ($name: ident, $in_type: ty) => {
-        define_wrapper_type!(
+        $crate::define_wrapper_type!(
             $name,
             $in_type,
             #[repr(transparent)],
