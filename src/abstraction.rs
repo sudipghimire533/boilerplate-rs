@@ -54,13 +54,13 @@ macro_rules! define_wrapper_type {
 
 #[cfg(test)]
 mod tests {
-    use std::hash::Hash;
     use std::collections::hash_map::DefaultHasher;
+    use std::hash::Hash;
 
     #[test]
     fn wrapper_type() {
         define_wrapper_type!(Value, u32);
-        
+
         let val = Value::from(1);
 
         // should derive clone trait
@@ -85,7 +85,7 @@ mod tests {
     #[test]
     fn wraper_type_core() {
         define_wrapper_type!(Custom, (i32, &'static str), #[derive(Hash)], #[repr(transparent)]);
-        
+
         let val = Custom::from((10, "test"));
 
         let _can_be_hashed = <Custom as Hash>::hash(&val, &mut DefaultHasher::new());
