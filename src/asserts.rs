@@ -89,3 +89,36 @@ macro_rules! assert_ok_eq {
 macro_rules! debug_assert_ok_eq {
     ($($arg:tt)*) => (if cfg!(debug_assertions) { $crate::assert_ok_eq!($($arg)*); })
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn assert_ok_success() {
+        assert_ok!(Ok::<(), ()>(()));
+        assert_ok_eq!(Ok::<_, ()>(10), 10);
+    }
+
+    #[test]
+    fn assert_err_success() {
+        assert_err!(Err::<(), _>("fail"));
+        assert_eq!(assert_err!(Err::<(), _>("error message")), "error message");
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_err_fail_on_ok() {
+        assert_err!(Ok::<(), ()>(()));
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_ok_fail_on_err() {
+        assert_ok!(Err::<(), ()>(()));
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_ok_fail_on_mismatch() {
+        assert_ok_eq!(Ok::<_, ()>(10), 20);
+    }
+}
