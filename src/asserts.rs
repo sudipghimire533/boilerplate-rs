@@ -24,6 +24,31 @@ macro_rules! assert_ok {
 }
 
 #[macro_export]
+macro_rules! assert_some {
+    ($cond:expr,) => {
+        $crate::assert_ok!($cond);
+    };
+
+    ($cond:expr) => {
+        match $cond {
+            Some(t) => t,
+            None => {
+                panic!("assertion failed, expected Some(..), got None");
+            }
+        }
+    };
+
+    ($cond:expr, $($arg:tt)+) => {
+        match $cond {
+            Some(t) => t,
+            None => {
+                panic!("assertion failed, expected Some(..), got None: {}", format_args!($($arg)+));
+            }
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! debug_assert_ok {
     ($($arg:tt)*) => (if cfg!(debug_assertions) { $crate::assert_ok!($($arg)*); })
 }
@@ -142,5 +167,16 @@ mod tests {
     #[should_panic]
     fn assert_ok_fail_on_mismatch() {
         assert_ok_eq!(Ok::<_, ()>(10), 20);
+    }
+
+    #[test]
+    fn assert_some_success() {
+        assert_some!(Some(10));
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_some_for_none() {
+        assert_some!(None::<u8>);
     }
 }
