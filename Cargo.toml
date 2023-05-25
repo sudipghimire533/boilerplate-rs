@@ -5,3 +5,22 @@ edition = "2021"
 
 [dependencies]
 paste = "1.0"
+chrono = { version = "0.4", optional = true }
+serde = { version = "1", features = ["derive"], optional  = true }
+
+[dev-dependencies]
+serde_json = { version = "1" }
+
+[features]
+default = [
+  "all",
+]
+
+all = [
+  "serde-datetime",
+]
+
+serde-datetime = [
+  "dep:chrono",
+  "dep:serde",
+]
