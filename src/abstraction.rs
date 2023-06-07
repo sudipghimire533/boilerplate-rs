@@ -38,6 +38,12 @@ macro_rules! define_wrapper_type {
             pub fn consume(self) -> $in_type {
                 self.0
             }
+
+            #[allow(dead_code)]
+            #[doc = "Create new instance from inner type"]
+            pub fn new(inner: $in_type) -> Self {
+                Self(inner)
+            }
         }
 
     };
