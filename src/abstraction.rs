@@ -14,12 +14,6 @@ macro_rules! define_wrapper_type {
             pub type [<$name _InnerType>] = $in_type;
         }
 
-        impl From<$in_type> for $name {
-            fn from(inner: $in_type) -> Self {
-                $name(inner)
-            }
-        }
-
         impl AsRef<$in_type> for $name {
             fn as_ref(&self) -> &$in_type {
                 &self.0
@@ -67,7 +61,7 @@ mod tests {
     fn wrapper_type() {
         define_wrapper_type!(Value, u32);
 
-        let val = Value::from(1);
+        let val = Value::new(1);
 
         // should derive clone trait
         assert_eq!(<Value as Clone>::clone(&val), val);
@@ -85,14 +79,14 @@ mod tests {
         assert_eq!(val.consume(), 1);
 
         // Type alias $Name + _InnerType should be defined referring to inner type
-        assert_eq!(Value::from(10_u32).consume(), Value_InnerType::from(10_u32));
+        assert_eq!(Value::new(10_u32).consume(), Value_InnerType::from(10_u32));
     }
 
     #[test]
     fn wraper_type_core() {
         define_wrapper_type!(Custom, (i32, &'static str), #[derive(Hash)], #[repr(transparent)];);
 
-        let val = Custom::from((10, "test"));
+        let val = Custom::new((10, "test"));
 
         let _can_be_hashed = <Custom as Hash>::hash(&val, &mut DefaultHasher::new());
     }
