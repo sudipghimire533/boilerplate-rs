@@ -4,6 +4,13 @@ pub trait Get<T> {
     fn get() -> T;
 }
 
+#[cfg(feature = "async")]
+#[async_trait::async_trait]
+pub trait AsyncGet<T> {
+    /// Get something asynchronously
+    async fn get() -> T;
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
