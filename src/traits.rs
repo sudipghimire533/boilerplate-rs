@@ -4,6 +4,14 @@ pub trait Get<T> {
     fn get() -> T;
 }
 
+/// Get the lngth of sttaic array only from type
+pub trait LengthOfArray {
+    const LENGTH: usize;
+}
+impl<T, const LENGTH: usize> LengthOfArray for [T; LENGTH] {
+    const LENGTH: usize = LENGTH;
+}
+
 #[cfg(feature = "async")]
 #[async_trait::async_trait]
 pub trait AsyncGet<T> {
@@ -26,5 +34,12 @@ mod tests {
         }
 
         assert_eq!(MagicNumberGetter::get(), 42);
+    }
+
+    #[test]
+    fn array_length() {
+        type Public = [u8; 32];
+
+        assert_eq!(Public::LENGTH, 32);
     }
 }
