@@ -86,9 +86,8 @@ macro_rules! assert_err_eq {
             Ok(t) => {
                 panic!("assertion failed, expected Err(..), got Ok(..)");
             }
-            Err($err) => {}
             Err(e) => {
-                panic!("assertion failed, expected Error: {:?}, got: {:?}", $err, e);
+                assert_eq!(e, $err);
             }
         }
     };
@@ -183,7 +182,7 @@ mod tests {
     #[test]
     #[should_panic]
     fn assert_err_eq_fail_on_ok() {
-        assert_err_eq!(Ok(()), 10);
+        assert_err_eq!(Ok::<(), i32>(()), 10);
     }
 
     #[test]
