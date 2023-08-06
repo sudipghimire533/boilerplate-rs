@@ -61,7 +61,7 @@ macro_rules! assert_err {
     ($cond:expr) => {
         match $cond {
             Ok(t) => {
-                panic!("assertion failed, expected Err(..), got Ok({:?})", t);
+                panic!("assertion failed, expected Err(..), got Ok(..)");
             },
             Err(e) => e,
         }
@@ -69,9 +69,27 @@ macro_rules! assert_err {
     ($cond:expr, $($arg:tt)+) => {
         match $cond {
             Ok(t) => {
-                panic!("assertion failed, expected Err(..), got Ok({:?}): {}", t, format_args!($($arg)+));
+                panic!("assertion failed, expected Err(..), got Ok(..): {}", format_args!($($arg)+));
             },
             Err(e) => e,
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! assert_err_eq {
+    ($cond:expr, $err:expr,) => {
+        $crate::assert_err_eq!($cond, $err);
+    };
+    ($cond:expr, $err:expr) => {
+        match $cond {
+            Ok(t) => {
+                panic!("assertion failed, expected Err(..), got Ok(..)");
+            }
+            Err($err) => {}
+            Err(e) => {
+                panic!("assertion failed, expected Error: {:?}, got: {:?}", $err, e);
+            }
         }
     };
 }
@@ -155,6 +173,23 @@ mod tests {
     #[should_panic]
     fn assert_err_fail_on_ok() {
         assert_err!(Ok::<(), ()>(()));
+    }
+
+    #[test]
+    fn assert_err_eq_success() {
+        assert_err_eq!(Err::<(), _>(10), 10);
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_err_eq_fail_on_ok() {
+        assert_err_eq!(Ok(()), 10);
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_err_eq_fail() {
+        assert_err_eq!(Err::<(), _>(10), 20);
     }
 
     #[test]
