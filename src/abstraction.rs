@@ -8,7 +8,7 @@ macro_rules! define_wrapper_type {
         $(#[$m])*
         pub struct $name( $(#[$n])* $in_type );
 
-        ::paste::paste! {
+        paste::paste! {
             #[allow(non_camel_case_types, dead_code)]
             #[doc = "Inner type of `" $name "`"]
             pub type [<$name _InnerType>] = $in_type;
